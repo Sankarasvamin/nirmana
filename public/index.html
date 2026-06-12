@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nirmana | 智能体3：人才培养方案</title>
+    <style>
+      :root {
+        --bg: #050505;
+        --panel: #0a0a0a;
+        --panel-2: #111111;
+        --panel-3: #1a1a1a;
+        --line: #1f2937;
+        --line-2: #303030;
+        --text: #f5f5f5;
+        --muted: #9a9a9a;
+        --dim: #585858;
+        --gold: #f7c600;
+        --gold-soft: rgba(247, 198, 0, 0.08);
+        --gold-line: rgba(247, 198, 0, 0.32);
+        --danger: #7f1d1d;
+        --radius: 2px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          "Arial Narrow", "Roboto Condensed", "Inter Tight", "PingFang SC",
+          "Microsoft YaHei", Arial, sans-serif;
+        letter-spacing: 0;
+      }
+
+      button,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 288px minmax(0, 1fr);
+        height: 100vh;
+        overflow: hidden;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 4px),
+          var(--bg);
+      }
+
+      .app.auth-hidden {
+        display: none;
+      }
+
+      .login-screen {
+        display: grid;
+        min-height: 100vh;
+        place-items: center;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 4px),
+          radial-gradient(circle at 70% 20%, rgba(247, 198, 0, 0.08), transparent 28%),
+          var(--bg);
+        padding: 24px;
+      }
+
+      .login-screen.hidden {
+        display: none;
+      }
+
+      .login-panel {
+        width: min(100%, 420px);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel);
+      }
+
+      .login-head {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        padding: 22px;
+      }
+
+      .login-head h1 {
+        margin: 0;
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 900;
+      }
+
+      .login-head p,
+      .login-hint {
+        color: var(--dim);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .login-head p {
+        margin: 4px 0 0;
+      }
+
+      .login-form {
+        display: grid;
+        gap: 12px;
+        padding: 22px;
+      }
+
+      .login-form label {
+        color: var(--gold);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      #login-name {
+        min-height: 44px;
+        border: 1px solid #3a3a3a;
+        border-radius: 0;
+        background: var(--panel-2);
+        color: var(--text);
+        outline: none;
+        padding: 0 12px;
+      }
+
+      #login-name:focus {
+        border-color: var(--gold);
+      }
+
+      #login-submit {
+        min-height: 44px;
+        border-radius: 0;
+        background: var(--gold);
+        color: #000;
+        cursor: pointer;
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .login-hint {
+        margin: 0;
+        line-height: 1.55;
+      }
+
+      .sidebar {
+        z-index: 2;
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        border-right: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .logo {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        padding: 22px 24px;
+      }
+
+      .mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: var(--radius);
+        background: var(--gold);
+        color: #000;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .logo h1,
+      .brand h1,
+      .context-panel h2,
+      .terminal-title,
+      .empty h2 {
+        margin: 0;
+        letter-spacing: 0;
+      }
+
+      .logo h1 {
+        overflow: hidden;
+        color: var(--text);
+        font-size: 0.88rem;
+        font-weight: 850;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .logo p {
+        margin: 3px 0 0;
+        color: var(--dim);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .thread-list {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 22px 0;
+      }
+
+      .nav-kicker,
+      .system-version {
+        color: var(--dim);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.66rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .nav-kicker {
+        padding: 0 24px 8px;
+      }
+
+      .thread {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 10px;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+        min-height: 44px;
+        border-left: 4px solid transparent;
+        background: transparent;
+        color: #5e5e5e;
+        cursor: pointer;
+        padding: 10px 20px;
+        text-align: left;
+      }
+
+      .thread:hover {
+        background: #111;
+        color: #d0d0d0;
+      }
+
+      .thread.active {
+        border-left-color: var(--gold);
+        background: var(--panel-3);
+        color: var(--text);
+      }
+
+      .thread-title {
+        min-width: 0;
+        overflow: hidden;
+        font-size: 0.86rem;
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .thread-meta {
+        width: 7px;
+        height: 7px;
+        border: 1px solid #3a3a3a;
+        border-radius: 50%;
+        color: transparent;
+        font-size: 0;
+      }
+
+      .thread.active .thread-meta {
+        border-color: var(--gold);
+        background: var(--gold);
+      }
+
+      .new-chat {
+        min-height: 42px;
+        margin: 18px 24px;
+        border: 1px solid var(--gold-line);
+        border-radius: var(--radius);
+        background: #191300;
+        color: var(--gold);
+        cursor: pointer;
+        font-size: 0.76rem;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .new-chat:hover {
+        background: var(--gold);
+        color: #000;
+      }
+
+      .system-version {
+        border-top: 1px solid var(--line);
+        padding: 18px 24px;
+      }
+
+      .main {
+        display: grid;
+        grid-template-rows: 64px minmax(0, 1fr);
+        min-width: 0;
+        min-height: 0;
+        background:
+          radial-gradient(circle at 80% 15%, rgba(247, 198, 0, 0.05), transparent 26%),
+          var(--bg);
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        background: rgba(10, 10, 10, 0.96);
+        padding: 0 32px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 22px;
+        width: 100%;
+      }
+
+      .brand h1 {
+        color: var(--text);
+        font-size: 1.08rem;
+        font-weight: 850;
+      }
+
+      .brand p {
+        margin: 4px 0 0;
+        color: var(--dim);
+        font-size: 0.76rem;
+      }
+
+      .top-meta {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 14px;
+        color: #777;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+      }
+
+      .user-chip,
+      .logout-button {
+        border: 1px solid #343434;
+        border-radius: var(--radius);
+        background: #171717;
+        color: #a0a0a0;
+        padding: 4px 7px;
+      }
+
+      .logout-button {
+        cursor: pointer;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+      }
+
+      .logout-button:hover {
+        border-color: var(--gold-line);
+        color: var(--gold);
+      }
+
+      .agent-id {
+        border: 1px solid #343434;
+        border-radius: var(--radius);
+        background: #171717;
+        color: #a0a0a0;
+        padding: 4px 7px;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        min-width: 130px;
+        color: var(--gold);
+        white-space: nowrap;
+      }
+
+      .status::before {
+        width: 7px;
+        height: 7px;
+        margin-right: 8px;
+        border-radius: 50%;
+        background: #444;
+        content: "";
+      }
+
+      .status.ready::before {
+        background: var(--gold);
+      }
+
+      .status.error {
+        color: #ff6b61;
+      }
+
+      .status.error::before {
+        background: #ff6b61;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(380px, 0.45fr) minmax(520px, 0.55fr);
+        gap: 28px;
+        min-height: 0;
+        overflow: hidden;
+        padding: 28px 32px;
+      }
+
+      .context-panel {
+        display: flex;
+        min-height: 0;
+        flex-direction: column;
+        gap: 22px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .logic-card,
+      .panel-card,
+      .output-card,
+      .terminal-shell {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel-2);
+      }
+
+      .logic-card {
+        position: relative;
+        overflow: hidden;
+        padding: 22px 24px 22px 28px;
+      }
+
+      .logic-card::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 3px;
+        background: #676767;
+        content: "";
+      }
+
+      .logic-card.active::before {
+        background: var(--gold);
+      }
+
+      .logic-card h2,
+      .panel-card h3,
+      .output-card h3 {
+        margin: 0;
+        color: var(--text);
+        font-size: 0.88rem;
+        font-weight: 850;
+      }
+
+      .role {
+        margin-top: 7px;
+        color: var(--gold);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+
+      .logic-card p {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.68;
+      }
+
+      .panel-card {
+        padding: 22px 24px;
+      }
+
+      .panel-card h3 {
+        display: flex;
+        align-items: center;
+        margin-bottom: 14px;
+        color: #d6d6d6;
+      }
+
+      .panel-card h3::before {
+        width: 6px;
+        height: 6px;
+        margin-right: 9px;
+        background: #646464;
+        content: "";
+      }
+
+      .panel-card ul {
+        display: grid;
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .panel-card li {
+        position: relative;
+        border-left: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.84rem;
+        line-height: 1.55;
+        padding-left: 16px;
+      }
+
+      .panel-card li::before {
+        position: absolute;
+        top: 0.8em;
+        left: 0;
+        width: 8px;
+        height: 1px;
+        background: var(--line);
+        content: "";
+      }
+
+      .output-card {
+        border-color: var(--gold-line);
+        padding: 20px 24px;
+      }
+
+      .output-card h3 {
+        color: var(--gold);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .output-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .output-item {
+        border: 1px solid #343434;
+        border-radius: var(--radius);
+        background: var(--panel-3);
+        color: #d2d2d2;
+        font-size: 0.78rem;
+        padding: 7px 10px;
+      }
+
+      .metric {
+        display: none;
+      }
+
+      .terminal-shell {
+        display: flex;
+        min-width: 0;
+        min-height: 0;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      .terminal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 42px;
+        border-bottom: 1px solid var(--line);
+        background: var(--panel);
+        padding: 0 16px;
+      }
+
+      .terminal-dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      .dot.red {
+        background: rgba(127, 29, 29, 0.58);
+      }
+
+      .dot.yellow {
+        background: rgba(247, 198, 0, 0.26);
+      }
+
+      .dot.green {
+        background: rgba(22, 101, 52, 0.58);
+      }
+
+      .terminal-title {
+        color: #666;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .terminal-version {
+        display: none;
+      }
+
+      .chat {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 22px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .messages {
+        display: flex;
+        min-height: 100%;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .empty {
+        display: grid;
+        gap: 14px;
+      }
+
+      .empty h2 {
+        display: none;
+      }
+
+      .empty p {
+        margin: 0 0 6px;
+        color: #686868;
+        font-size: 0.78rem;
+        line-height: 1.65;
+      }
+
+      .prompt-row {
+        display: grid;
+        gap: 8px;
+      }
+
+      .prompt {
+        min-height: 38px;
+        border: 1px solid var(--line);
+        border-radius: 0;
+        background: transparent;
+        color: #8d8d8d;
+        cursor: pointer;
+        font-size: 0.78rem;
+        line-height: 1.45;
+        padding: 9px 11px;
+        text-align: left;
+      }
+
+      .prompt:hover {
+        border-color: var(--gold-line);
+        color: var(--gold);
+      }
+
+      .message {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 4px;
+      }
+
+      .message.user {
+        align-items: flex-end;
+      }
+
+      .message.agent,
+      .message.system {
+        align-items: flex-start;
+      }
+
+      .label {
+        color: var(--gold);
+        font-size: 0.62rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .message.user .label {
+        color: #666;
+      }
+
+      .bubble {
+        max-width: min(90%, 860px);
+        border: 1px solid var(--gold-line);
+        border-radius: 0;
+        background: rgba(247, 198, 0, 0.045);
+        color: #d0d0d0;
+        font-family:
+          "Arial Narrow", "Roboto Condensed", "Inter Tight", "PingFang SC",
+          "Microsoft YaHei", Arial, sans-serif;
+        font-size: 0.84rem;
+        line-height: 1.72;
+        overflow-wrap: break-word;
+        padding: 13px 15px;
+        white-space: pre-wrap;
+      }
+
+      .message.user .bubble {
+        border-color: #444;
+        background: var(--panel-3);
+        color: var(--text);
+      }
+
+      .log-list {
+        display: grid;
+        gap: 10px;
+        opacity: 0.75;
+      }
+
+      .log-line {
+        color: #888;
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
+
+      .log-time {
+        margin-right: 12px;
+        color: #555;
+      }
+
+      .locked-note {
+        margin-bottom: 18px;
+        color: #5f5f5f;
+        font-size: 0.78rem;
+      }
+
+      .composer-wrap {
+        flex: 0 0 auto;
+        border-top: 1px solid var(--line);
+        background: var(--panel);
+        padding: 14px;
+      }
+
+      .composer {
+        display: grid;
+        grid-template-columns: 28px minmax(0, 1fr) 108px;
+        align-items: stretch;
+        border: 1px solid #3a3a3a;
+        background: var(--panel-2);
+      }
+
+      .composer::before {
+        display: grid;
+        place-items: center;
+        color: var(--gold);
+        content: ">";
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 1rem;
+      }
+
+      .composer:focus-within {
+        border-color: var(--gold);
+      }
+
+      #question {
+        width: 100%;
+        min-height: 48px;
+        max-height: 150px;
+        resize: vertical;
+        border: 0;
+        background: transparent;
+        color: var(--text);
+        outline: none;
+        padding: 13px 10px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+
+      #question::placeholder {
+        color: #505050;
+      }
+
+      #send {
+        min-height: 48px;
+        border-left: 1px solid #3a3a3a;
+        border-radius: 0;
+        background: var(--panel-3);
+        color: #a0a0a0;
+        cursor: pointer;
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      #send:hover,
+      #send:focus {
+        background: var(--gold);
+        color: #000;
+      }
+
+      #send:disabled {
+        cursor: not-allowed;
+        opacity: 0.42;
+      }
+
+      .hint {
+        margin: 9px 0 0;
+        color: #555;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.68rem;
+      }
+
+      .locked .composer-wrap {
+        opacity: 0.32;
+        pointer-events: none;
+      }
+
+      ::selection {
+        background: var(--gold);
+        color: #000;
+      }
+
+      @media (max-width: 1120px) {
+        .app {
+          grid-template-columns: 236px minmax(0, 1fr);
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+          overflow-y: auto;
+        }
+
+        .context-panel {
+          overflow: visible;
+        }
+
+        .terminal-shell {
+          min-height: 620px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .app {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(0, 1fr);
+        }
+
+        .sidebar {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .logo {
+          padding: 14px 16px;
+        }
+
+        .thread-list,
+        .new-chat,
+        .system-version {
+          display: none;
+        }
+
+        .main {
+          min-height: 0;
+        }
+
+        .topbar {
+          min-height: 86px;
+          padding: 12px 16px;
+        }
+
+        .brand {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .top-meta {
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .workspace {
+          gap: 12px;
+          padding: 12px;
+        }
+
+        .terminal-shell {
+          min-height: 560px;
+        }
+
+        .bubble {
+          max-width: 100%;
+        }
+
+        .composer {
+          grid-template-columns: 26px minmax(0, 1fr) 78px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section id="login-screen" class="login-screen" aria-label="模拟登录">
+      <div class="login-panel">
+        <div class="login-head">
+          <div class="mark">NIR</div>
+          <div>
+            <h1>Nirmana Access</h1>
+            <p>Session Gate / Simulated Login</p>
+          </div>
+        </div>
+        <form id="login-form" class="login-form">
+          <label for="login-name">Operator ID</label>
+          <input id="login-name" name="loginName" type="text" placeholder="输入操作者名称" autocomplete="name" required />
+          <button id="login-submit" type="submit">Enter System</button>
+          <p class="login-hint">仅限授权人员进入。请确认当前任务编号、数据来源与输出用途符合项目管理要求。</p>
+        </form>
+      </div>
+    </section>
+
+    <main id="app" class="app auth-hidden">
+      <aside class="sidebar" aria-label="智能体导航">
+        <div class="logo">
+          <div class="mark">NIR</div>
+          <div>
+            <h1>Nirmana</h1>
+            <p>数智化学习平台 MIS / 上海市物联网行业协会</p>
+          </div>
+        </div>
+
+        <div class="thread-list" aria-label="智能体序列">
+          <div class="nav-kicker">Core Agents</div>
+          <button class="thread" type="button" data-agent="agent1">
+            <span class="thread-title">智能体 1：人才发展报告</span>
+            <span class="thread-meta">standby</span>
+          </button>
+          <button class="thread" type="button" data-agent="agent2">
+            <span class="thread-title">智能体 2：胜任力差距分析</span>
+            <span class="thread-meta">standby</span>
+          </button>
+          <button class="thread active" type="button" data-agent="agent3">
+            <span class="thread-title">智能体 3：人才培养方案</span>
+            <span class="thread-meta">active</span>
+          </button>
+          <button class="thread" type="button" data-agent="agent4">
+            <span class="thread-title">智能体 4：课程设计开发</span>
+            <span class="thread-meta">standby</span>
+          </button>
+          <button class="thread" type="button" data-agent="agent5">
+            <span class="thread-title">智能体 5：评价题库生成</span>
+            <span class="thread-meta">standby</span>
+          </button>
+        </div>
+
+        <button id="new-chat" class="new-chat" type="button">Reset Agent 03</button>
+        <div class="system-version">Nirmana System: v2.4.1_Build904</div>
+      </aside>
+
+      <section class="main">
+        <header class="topbar">
+          <div class="brand">
+            <div>
+              <h1 id="agent-title">方案设计与生成工作台</h1>
+              <p id="agent-subtitle">智能体3作为培养方案设计核心枢纽，连接产业需求、胜任力差距与课程开发。</p>
+            </div>
+            <div class="top-meta">
+              <span id="agent-id" class="agent-id">ID: AGENT3</span>
+              <span id="status" class="status">引擎校验中</span>
+              <span id="user-chip" class="user-chip">USER: --</span>
+              <button id="logout" class="logout-button" type="button">Logout</button>
+              <span>SYS: NIRMANA</span>
+              <span>NODE: SH-01</span>
+            </div>
+          </div>
+        </header>
+
+        <section class="workspace">
+          <aside class="context-panel" aria-label="业务模型">
+            <section id="role-card" class="logic-card active">
+              <h2>核心角色定位</h2>
+              <div id="agent-role" class="role">方案设计核心枢纽</div>
+              <p id="agent-desc">扮演“培养方案设计专家”角色，基于产业数据构建科学的人才培养体系。作为系统承上启下的枢纽，直接为智能体4提供顶层规划依据。</p>
+            </section>
+
+            <div id="panel-stack"></div>
+
+            <section class="output-card">
+              <h3>Standard Outputs</h3>
+              <div id="output-list" class="output-list"></div>
+            </section>
+
+            <section class="metric">
+              <strong id="message-count">0</strong>
+              <p>本轮指令计数</p>
+            </section>
+          </aside>
+
+          <section id="terminal-shell" class="terminal-shell">
+            <div class="terminal-head">
+              <div class="terminal-dots" aria-hidden="true">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <h2 id="terminal-mode" class="terminal-title">Interactive_Shell</h2>
+              <span class="terminal-version">NIRMANA_AGENT_03</span>
+            </div>
+
+            <section class="chat" aria-live="polite">
+              <div id="messages" class="messages"></div>
+            </section>
+
+            <form id="form" class="composer-wrap">
+              <div class="composer">
+                <textarea
+                  id="question"
+                  name="question"
+                  placeholder="输入初始条件以启动方案生成..."
+                  autocomplete="off"
+                  required
+                ></textarea>
+                <button id="send" type="submit">Execute</button>
+              </div>
+              <p class="hint">CMD/CTRL + ENTER EXECUTE / TARGET: 九宫格结构人才培养方案 + 毕业要求-课程支撑矩阵表</p>
+            </form>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const AGENTS = {
+        agent1: {
+          id: 'agent1',
+          menuName: '智能体 1：人才发展报告',
+          title: '产业与人才发展报告引擎',
+          role: '产业需求分析师',
+          desc: '基于产业视角，深度挖掘人才供需规律与发展趋势的核心分析专家。为后续所有智能体提供标准化的产业基准数据与人才参考模型。',
+          panels: [
+            {
+              title: '核心输入源 (Inputs)',
+              items: ['权威行业报告：宏观市场数据与发展预测', '企业招聘画像：海量真实JD的结构化解析', '产业演进趋势：技术迭代与岗位变迁数据'],
+            },
+            {
+              title: '核心处理流程 (Process)',
+              items: ['01. 分析：行业与技术解构', '02. 梳理：重点企业与岗位映射', '03. 分解：岗位KSA能力要素', '04. 输出：全景职业能力图谱'],
+            },
+          ],
+          outputs: ['标准化人才报告', '行业胜任力模型', 'AI 评分基准'],
+          terminalState: 'standby',
+          logs: ['[System] 正在连接外部行业数据库...', '[Data] 已拉取 14,500 份有效岗位 JD.', '[Process] KSA 提取算法运行中，当前进度 87%...'],
+        },
+        agent2: {
+          id: 'agent2',
+          menuName: '智能体 2：胜任力差距分析',
+          title: '胜任力动态差距分析工作台',
+          role: '差距评估专家',
+          desc: '专注能力现状与未来需求的动态评估。为智能体3进行培养方案的动态优化提供核心数据支撑，并赋能智能体6构建精准的学习者画像。',
+          panels: [
+            {
+              title: '核心量化模型',
+              items: ['动态差距分 = 基础差距分 × 基础权重 + 预测差距分 × 预测权重', '期望差距模型：E[G] = P(base)·W_b + P(pred)·W_p'],
+            },
+            {
+              title: '差异化应用策略',
+              items: ['高暴露职业：侧重预测差距，提前布局未来能力储备。', '低暴露职业：侧重当前差距，优先解决现有能力短板。'],
+            },
+          ],
+          outputs: ['识别缺失关键技能', '界定需更新技能项', '输出综合差距等级图谱'],
+          terminalState: 'standby',
+          logs: ['[Analytics] 正在载入学习者能力基线...', '[Model] 动态差距模型已应用 (权重配置: base=0.6, pred=0.4).', '[Result] 发现高暴露职业技能短板：物联网边缘计算架构.'],
+        },
+        agent3: {
+          id: 'agent3',
+          menuName: '智能体 3：人才培养方案',
+          title: '方案设计与生成工作台',
+          role: '方案设计核心枢纽',
+          desc: '扮演“培养方案设计专家”角色，基于产业数据构建科学的人才培养体系。作为系统承上启下的枢纽，直接为智能体4提供顶层规划依据。',
+          panels: [
+            {
+              title: '核心映射逻辑',
+              items: [
+                '映射一 (产业 ➔ 定位)：分析区域产业需求，精准锁定专业建设定位',
+                '映射二 (胜任力 ➔ 要求)：解构核心胜任力模型，转化为毕业要求指标',
+                '映射三 (职责 ➔ 目标)：梳理典型工作任务，制定清晰人才培养目标',
+                '映射四 (课程 ➔ 能力)：构建阶梯式课程体系，实现动态匹配',
+              ],
+            },
+          ],
+          outputs: ['《九宫格结构人才培养方案》', '《毕业要求-课程支撑矩阵表》', '配套考核规范与指引'],
+          terminalState: 'active',
+          logs: ['[System] 智能体 3 引擎已就绪。等待用户输入指令...'],
+        },
+        agent4: {
+          id: 'agent4',
+          menuName: '智能体 4：课程设计开发',
+          title: '课程体系规划与资源开发',
+          role: '课程资源设计师',
+          desc: '作为连接培养方案与落地教学的核心枢纽，负责将抽象的培养目标转化为具体、可执行的课程体系与教学资源。',
+          panels: [
+            {
+              title: '核心设计流程',
+              items: ['① 深度解析与接收专业培养方案', '② 规划课程体系架构与学分分配', '③ 针对性开发配套教学资源与课件', '④ 设计多维度的课程质量评估方案'],
+            },
+            {
+              title: '跨智能体协同',
+              items: ['向智能体5提供精准的课程考核范围与知识点权重。', '向智能体7输出具体的教学素材需求清单。'],
+            },
+          ],
+          outputs: ['标准课程教学大纲', '结构化教学资源包', '可视化课程地图'],
+          terminalState: 'standby',
+          logs: ['[Fetch] 正在获取智能体3下发的《支撑矩阵表》...', '[Parse] 学分分配模型运行完毕。', '[Standby] 等待人工审核前置方案以启动课件生成。'],
+        },
+        agent5: {
+          id: 'agent5',
+          menuName: '智能体 5：评价题库生成',
+          title: '标准化题库生成实验室',
+          role: '能力评价专家',
+          desc: '基于行业标准与岗位能力模型，构建标准化的题库生成体系，为学习者能力的科学、客观评估提供核心支撑。',
+          panels: [
+            {
+              title: '题库覆盖类型与流程',
+              items: ['理论知识题库：9步标准化闭环生成流程。', '操作技能题库：14步项目化任务拆解生成。'],
+            },
+            {
+              title: '协同联动 (Quiz模式)',
+              items: ['为智能体7提供实时交互所需的理论题库数据。', '为智能体6提供标准化的评分标准与基准数据。'],
+            },
+          ],
+          outputs: ['标准化试题单 (JSON格式)', '规范答题卷及解析', '多维度评分细则表'],
+          terminalState: 'standby',
+          logs: ['[Builder] 9步闭环生成引擎挂起...', '[Database] 当前知识库向量化索引已达 450,210 条。', '[System] 准备接收操作技能拆解任务。'],
+        },
+      }
+
+      const form = document.querySelector('#form')
+      const appRoot = document.querySelector('#app')
+      const loginScreen = document.querySelector('#login-screen')
+      const loginForm = document.querySelector('#login-form')
+      const loginNameInput = document.querySelector('#login-name')
+      const questionInput = document.querySelector('#question')
+      const sendButton = document.querySelector('#send')
+      const messages = document.querySelector('#messages')
+      const statusBadge = document.querySelector('#status')
+      const messageCount = document.querySelector('#message-count')
+      const newChatButton = document.querySelector('#new-chat')
+      const userChip = document.querySelector('#user-chip')
+      const logoutButton = document.querySelector('#logout')
+      const navButtons = document.querySelectorAll('.thread')
+      const agentTitle = document.querySelector('#agent-title')
+      const agentSubtitle = document.querySelector('#agent-subtitle')
+      const agentId = document.querySelector('#agent-id')
+      const agentRole = document.querySelector('#agent-role')
+      const agentDesc = document.querySelector('#agent-desc')
+      const panelStack = document.querySelector('#panel-stack')
+      const outputList = document.querySelector('#output-list')
+      const terminalMode = document.querySelector('#terminal-mode')
+      const terminalShell = document.querySelector('#terminal-shell')
+
+      const SESSION_USER_KEY = 'nirmana_session_user'
+      let activeAgentId = 'agent3'
+      let hasMessages = false
+      let count = 0
+      let savedAgent3Html = ''
+
+      renderAgent('agent3')
+      checkHealth()
+      restoreSession()
+
+      navButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          renderAgent(button.dataset.agent)
+        })
+      })
+
+      loginForm.addEventListener('submit', (event) => {
+        event.preventDefault()
+
+        const userName = loginNameInput.value.trim()
+        if (!userName) return
+
+        sessionStorage.setItem(SESSION_USER_KEY, userName)
+        unlockSession(userName)
+      })
+
+      logoutButton.addEventListener('click', () => {
+        sessionStorage.removeItem(SESSION_USER_KEY)
+        lockSession()
+      })
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault()
+
+        if (activeAgentId !== 'agent3') return
+
+        const question = questionInput.value.trim()
+        if (!question) return
+
+        addMessage('user', 'User_Input', question)
+        questionInput.value = ''
+        questionInput.style.height = ''
+        setLoading(true)
+
+        const pending = addMessage('agent', 'System_Output', '【指令确认】正在解构核心胜任力模型。')
+
+        try {
+          await streamAnswer(question, pending.querySelector('.bubble'))
+        } catch (error) {
+          pending.querySelector('.bubble').textContent = `【执行中断】${error.message}`
+        } finally {
+          setLoading(false)
+          questionInput.focus()
+        }
+      })
+
+      questionInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+          form.requestSubmit()
+        }
+      })
+
+      questionInput.addEventListener('input', () => {
+        questionInput.style.height = 'auto'
+        questionInput.style.height = `${Math.min(questionInput.scrollHeight, 150)}px`
+      })
+
+      newChatButton?.addEventListener('click', () => {
+        activeAgentId = 'agent3'
+        hasMessages = false
+        count = 0
+        updateCount()
+        renderAgent('agent3', true)
+        questionInput.focus()
+      })
+
+      async function checkHealth() {
+        try {
+          const response = await fetch('/api/health')
+          const data = await response.json()
+
+          if (data.agent?.configured) {
+            statusBadge.textContent = 'ENGINE: ONLINE'
+            statusBadge.classList.add('ready')
+            statusBadge.classList.remove('error')
+            return
+          }
+
+          statusBadge.textContent = 'ENGINE: PENDING'
+          statusBadge.classList.remove('ready', 'error')
+        } catch {
+          statusBadge.textContent = 'ENGINE: OFFLINE'
+          statusBadge.classList.add('error')
+          statusBadge.classList.remove('ready')
+        }
+      }
+
+      function renderAgent(agentIdValue, reset = false) {
+        if (activeAgentId === 'agent3' && agentIdValue !== 'agent3') {
+          savedAgent3Html = messages.innerHTML
+        }
+
+        activeAgentId = agentIdValue
+        const agent = AGENTS[agentIdValue]
+
+        navButtons.forEach((button) => {
+          button.classList.toggle('active', button.dataset.agent === agentIdValue)
+        })
+
+        agentTitle.textContent = agent.title
+        agentSubtitle.textContent = agent.desc
+        agentId.textContent = `ID: ${agent.id.toUpperCase()}`
+        agentRole.textContent = agent.role
+        agentDesc.textContent = agent.desc
+        terminalMode.textContent = agent.terminalState === 'active' ? 'Interactive_Shell' : 'Read_Only_Log'
+        terminalShell.classList.toggle('locked', agent.terminalState !== 'active')
+
+        panelStack.innerHTML = agent.panels.map((panel) => `
+          <section class="panel-card">
+            <h3>${escapeHtml(panel.title)}</h3>
+            <ul>
+              ${panel.items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
+            </ul>
+          </section>
+        `).join('')
+
+        outputList.innerHTML = agent.outputs
+          .map((item) => `<span class="output-item">${escapeHtml(item)}</span>`)
+          .join('')
+
+        if (agent.terminalState === 'active') {
+          if (reset || !savedAgent3Html) {
+            messages.innerHTML = getAgent3EmptyState()
+            hasMessages = false
+          } else {
+            messages.innerHTML = savedAgent3Html
+            hasMessages = !messages.querySelector('.empty')
+          }
+          questionInput.disabled = false
+          sendButton.disabled = false
+          questionInput.placeholder = '输入初始条件以启动方案生成...'
+        } else {
+          messages.innerHTML = getLogState(agent)
+          questionInput.disabled = true
+          sendButton.disabled = true
+          questionInput.placeholder = 'SYSTEM LOCKED'
+        }
+      }
+
+      async function streamAnswer(question, bubble) {
+        const response = await fetch('/api/chat-stream', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ question }),
+        })
+
+        if (!response.ok || !response.body) {
+          const data = await response.json().catch(() => ({}))
+          throw new Error(data.error || '请求失败')
+        }
+
+        const reader = response.body.getReader()
+        const decoder = new TextDecoder()
+        let buffer = ''
+        let answer = ''
+
+        while (true) {
+          const { value, done } = await reader.read()
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const events = buffer.split(/\n\n|\r\n\r\n/)
+          buffer = events.pop() || ''
+
+          for (const rawEvent of events) {
+            const event = parseSseEvent(rawEvent)
+            if (!event.data) continue
+
+            const payload = JSON.parse(event.data)
+
+            if (event.event === 'delta') {
+              answer += payload.text || ''
+              bubble.textContent = answer.trim()
+              bubble.scrollIntoView({ block: 'end', behavior: 'smooth' })
+            }
+
+            if (event.event === 'error') {
+              throw new Error(payload.error || '流式生成失败')
+            }
+          }
+        }
+
+        if (!answer.trim()) {
+          bubble.textContent = '【响应为空】未生成可解析的培养方案文本。'
+        }
+      }
+
+      function parseSseEvent(rawEvent) {
+        const event = { event: '', data: '' }
+
+        for (const line of rawEvent.split(/\r?\n/)) {
+          if (line.startsWith('event:')) {
+            event.event = line.slice(6).trim()
+          }
+
+          if (line.startsWith('data:')) {
+            event.data += line.slice(5).trim()
+          }
+        }
+
+        return event
+      }
+
+      function addMessage(type, label, text) {
+        if (!hasMessages) {
+          messages.textContent = ''
+          hasMessages = true
+        }
+
+        const item = document.createElement('article')
+        item.className = `message ${type}`
+
+        const labelNode = document.createElement('div')
+        labelNode.className = 'label'
+        labelNode.textContent = label
+
+        const bubble = document.createElement('div')
+        bubble.className = 'bubble'
+        bubble.textContent = text
+
+        item.append(labelNode, bubble)
+        messages.append(item)
+        item.scrollIntoView({ block: 'end', behavior: 'smooth' })
+
+        count += 1
+        updateCount()
+        savedAgent3Html = messages.innerHTML
+
+        return item
+      }
+
+      function getAgent3EmptyState() {
+        return `
+          <section class="empty">
+            <h2>Talent Program Design Engine</h2>
+            <p># Module active. 人才培养方案设计引擎（智能体3）就绪。输入产业趋势或岗位需求，系统将输出标准的《九宫格结构人才培养方案》。</p>
+            <div class="message system">
+              <span class="label">System_Output</span>
+              <div class="bubble">[System] 智能体 3 引擎已就绪。等待用户输入指令...\n[Mapping] 产业 ➔ 定位 / 胜任力 ➔ 要求 / 职责 ➔ 目标 / 课程 ➔ 能力\n[Output] 《九宫格结构人才培养方案》 + 《毕业要求-课程支撑矩阵表》</div>
+            </div>
+            <div class="prompt-row">
+              <button class="prompt" type="button" onclick="fillPrompt(this)">基于物联网产业岗位群，生成《九宫格结构人才培养方案》。</button>
+              <button class="prompt" type="button" onclick="fillPrompt(this)">【指令确认】正在处理人才培养方案需求：请输出四大映射链路。</button>
+              <button class="prompt" type="button" onclick="fillPrompt(this)">将典型岗位职责映射为培养目标，并生成毕业要求指标。</button>
+              <button class="prompt" type="button" onclick="fillPrompt(this)">生成《毕业要求-课程支撑矩阵表》，要求体现课程 ➔ 能力链路。</button>
+            </div>
+          </section>
+        `
+      }
+
+      function getLogState(agent) {
+        const now = new Date().toISOString().split('T')[1].slice(0, 8)
+        return `
+          <section class="log-list">
+            <div class="locked-note"># Module locked by system. Waiting for upstream trigger.</div>
+            ${agent.logs.map((log) => `
+              <div class="log-line"><span class="log-time">[${now}]</span>${escapeHtml(log)}</div>
+            `).join('')}
+            <div class="log-line">_</div>
+          </section>
+        `
+      }
+
+      function fillPrompt(button) {
+        if (activeAgentId !== 'agent3') return
+        questionInput.value = button.textContent.trim()
+        questionInput.focus()
+      }
+
+      function updateCount() {
+        messageCount.textContent = String(count)
+      }
+
+      function setLoading(isLoading) {
+        sendButton.disabled = isLoading
+        questionInput.disabled = isLoading
+        sendButton.textContent = isLoading ? 'Running' : 'Execute'
+      }
+
+      function restoreSession() {
+        const userName = sessionStorage.getItem(SESSION_USER_KEY)
+
+        if (userName) {
+          unlockSession(userName)
+          return
+        }
+
+        lockSession()
+      }
+
+      function unlockSession(userName) {
+        loginScreen.classList.add('hidden')
+        appRoot.classList.remove('auth-hidden')
+        userChip.textContent = `USER: ${userName}`
+        questionInput.focus()
+      }
+
+      function lockSession() {
+        appRoot.classList.add('auth-hidden')
+        loginScreen.classList.remove('hidden')
+        userChip.textContent = 'USER: --'
+        loginNameInput.value = ''
+        loginNameInput.focus()
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;')
+      }
+    </script>
+  </body>
+</html>
