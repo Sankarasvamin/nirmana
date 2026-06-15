@@ -15,9 +15,9 @@
         --text: #f5f5f5;
         --muted: #9a9a9a;
         --dim: #585858;
-        --gold: #f7c600;
-        --gold-soft: rgba(247, 198, 0, 0.08);
-        --gold-line: rgba(247, 198, 0, 0.32);
+        --blue: #004598;
+        --blue-soft: rgba(0, 69, 152, 0.18);
+        --blue-line: rgba(0, 85, 180, 0.5);
         --danger: #7f1d1d;
         --radius: 2px;
       }
@@ -29,6 +29,10 @@
       html,
       body {
         height: 100%;
+      }
+
+      html {
+        font-size: 17px;
       }
 
       body {
@@ -70,7 +74,7 @@
         place-items: center;
         background:
           linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 4px),
-          radial-gradient(circle at 70% 20%, rgba(247, 198, 0, 0.08), transparent 28%),
+          radial-gradient(circle at 70% 20%, rgba(0, 69, 152, 0.2), transparent 28%),
           var(--bg);
         padding: 24px;
       }
@@ -122,7 +126,7 @@
       }
 
       .login-form label {
-        color: var(--gold);
+        color: var(--blue);
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 0.68rem;
         letter-spacing: 0.12em;
@@ -140,14 +144,14 @@
       }
 
       #login-name:focus {
-        border-color: var(--gold);
+        border-color: var(--blue);
       }
 
       #login-submit {
         min-height: 44px;
         border-radius: 0;
-        background: var(--gold);
-        color: #000;
+        background: var(--blue);
+        color: #f8fbff;
         cursor: pointer;
         font-size: 0.72rem;
         font-weight: 900;
@@ -184,8 +188,8 @@
         height: 34px;
         place-items: center;
         border-radius: var(--radius);
-        background: var(--gold);
-        color: #000;
+        background: var(--blue);
+        color: #f8fbff;
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 0.72rem;
         font-weight: 900;
@@ -259,7 +263,7 @@
       }
 
       .thread.active {
-        border-left-color: var(--gold);
+        border-left-color: var(--blue);
         background: var(--panel-3);
         color: var(--text);
       }
@@ -283,17 +287,17 @@
       }
 
       .thread.active .thread-meta {
-        border-color: var(--gold);
-        background: var(--gold);
+        border-color: var(--blue);
+        background: var(--blue);
       }
 
       .new-chat {
         min-height: 42px;
         margin: 18px 24px;
-        border: 1px solid var(--gold-line);
+        border: 1px solid var(--blue-line);
         border-radius: var(--radius);
-        background: #191300;
-        color: var(--gold);
+        background: #031326;
+        color: var(--blue);
         cursor: pointer;
         font-size: 0.76rem;
         font-weight: 850;
@@ -302,8 +306,8 @@
       }
 
       .new-chat:hover {
-        background: var(--gold);
-        color: #000;
+        background: var(--blue);
+        color: #f8fbff;
       }
 
       .system-version {
@@ -317,7 +321,7 @@
         min-width: 0;
         min-height: 0;
         background:
-          radial-gradient(circle at 80% 15%, rgba(247, 198, 0, 0.05), transparent 26%),
+          radial-gradient(circle at 80% 15%, rgba(0, 69, 152, 0.18), transparent 26%),
           var(--bg);
       }
 
@@ -377,8 +381,8 @@
       }
 
       .logout-button:hover {
-        border-color: var(--gold-line);
-        color: var(--gold);
+        border-color: var(--blue-line);
+        color: var(--blue);
       }
 
       .agent-id {
@@ -393,7 +397,7 @@
         display: inline-flex;
         align-items: center;
         min-width: 130px;
-        color: var(--gold);
+        color: var(--blue);
         white-space: nowrap;
       }
 
@@ -407,7 +411,7 @@
       }
 
       .status.ready::before {
-        background: var(--gold);
+        background: var(--blue);
       }
 
       .status.error {
@@ -462,7 +466,7 @@
       }
 
       .logic-card.active::before {
-        background: var(--gold);
+        background: var(--blue);
       }
 
       .logic-card h2,
@@ -476,7 +480,7 @@
 
       .role {
         margin-top: 7px;
-        color: var(--gold);
+        color: var(--blue);
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 0.7rem;
         letter-spacing: 0.07em;
@@ -537,12 +541,12 @@
       }
 
       .output-card {
-        border-color: var(--gold-line);
+        border-color: var(--blue-line);
         padding: 20px 24px;
       }
 
       .output-card h3 {
-        color: var(--gold);
+        color: var(--blue);
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 0.68rem;
         letter-spacing: 0.12em;
@@ -604,7 +608,7 @@
       }
 
       .dot.yellow {
-        background: rgba(247, 198, 0, 0.26);
+        background: rgba(0, 85, 180, 0.52);
       }
 
       .dot.green {
@@ -673,8 +677,8 @@
       }
 
       .prompt:hover {
-        border-color: var(--gold-line);
-        color: var(--gold);
+        border-color: var(--blue-line);
+        color: var(--blue);
       }
 
       .message {
@@ -694,7 +698,7 @@
       }
 
       .label {
-        color: var(--gold);
+        color: var(--blue);
         font-size: 0.62rem;
         letter-spacing: 0.12em;
         text-transform: uppercase;
@@ -706,9 +710,9 @@
 
       .bubble {
         max-width: min(90%, 860px);
-        border: 1px solid var(--gold-line);
+        border: 1px solid var(--blue-line);
         border-radius: 0;
-        background: rgba(247, 198, 0, 0.045);
+        background: rgba(0, 69, 152, 0.14);
         color: #d0d0d0;
         font-family:
           "Arial Narrow", "Roboto Condensed", "Inter Tight", "PingFang SC",
@@ -724,6 +728,114 @@
         border-color: #444;
         background: var(--panel-3);
         color: var(--text);
+      }
+
+      .bubble.rendered {
+        white-space: normal;
+      }
+
+      .md-plain {
+        white-space: pre-wrap;
+      }
+
+      .md-heading {
+        margin: 16px 0 8px;
+        color: #f4f8ff;
+        font-weight: 850;
+        line-height: 1.35;
+        letter-spacing: 0;
+      }
+
+      .md-heading:first-child {
+        margin-top: 0;
+      }
+
+      .md-heading-1 {
+        border-bottom: 1px solid var(--blue-line);
+        color: #ffffff;
+        font-size: 1.18rem;
+        padding-bottom: 7px;
+      }
+
+      .md-heading-2 {
+        position: relative;
+        border-left: 3px solid var(--blue);
+        font-size: 1.04rem;
+        padding-left: 10px;
+      }
+
+      .md-heading-3 {
+        color: #dbeafe;
+        font-size: 0.96rem;
+      }
+
+      .md-heading-4,
+      .md-heading-5,
+      .md-heading-6 {
+        color: #b8c7dd;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .markdown-table-wrap {
+        width: 100%;
+        margin: 10px 0;
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.018);
+      }
+
+      .markdown-table {
+        width: 100%;
+        min-width: 520px;
+        border-collapse: collapse;
+        color: #d8d8d8;
+        font-size: 0.82rem;
+        line-height: 1.55;
+        white-space: normal;
+      }
+
+      .markdown-table th,
+      .markdown-table td {
+        border: 1px solid #2b3444;
+        padding: 9px 11px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      .markdown-table th {
+        background: rgba(0, 69, 152, 0.24);
+        color: #f4f8ff;
+        font-weight: 850;
+      }
+
+      .markdown-table tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.018);
+      }
+
+      .markdown-table code,
+      .md-plain code {
+        border: 1px solid #2f3a4b;
+        background: #0b1220;
+        color: #dbeafe;
+        padding: 1px 4px;
+      }
+
+      .bubble strong {
+        color: #f8fbff;
+        font-weight: 900;
+      }
+
+      .bubble em {
+        color: #dbeafe;
+        font-style: italic;
+      }
+
+      .bubble del {
+        color: #7d8797;
+        text-decoration-color: #526073;
       }
 
       .log-list {
@@ -767,14 +879,14 @@
       .composer::before {
         display: grid;
         place-items: center;
-        color: var(--gold);
+        color: var(--blue);
         content: ">";
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
         font-size: 1rem;
       }
 
       .composer:focus-within {
-        border-color: var(--gold);
+        border-color: var(--blue);
       }
 
       #question {
@@ -811,8 +923,8 @@
 
       #send:hover,
       #send:focus {
-        background: var(--gold);
-        color: #000;
+        background: var(--blue);
+        color: #f8fbff;
       }
 
       #send:disabled {
@@ -833,8 +945,8 @@
       }
 
       ::selection {
-        background: var(--gold);
-        color: #000;
+        background: var(--blue);
+        color: #f8fbff;
       }
 
       @media (max-width: 1120px) {
@@ -941,7 +1053,7 @@
           <div class="mark">NIR</div>
           <div>
             <h1>Nirmana</h1>
-            <p>数智化学习平台 MIS / 上海市物联网行业协会</p>
+            <p>数智化学习平台 MIS / 画皮実行委員会</p>
           </div>
         </div>
 
@@ -1223,7 +1335,7 @@
         try {
           await streamAnswer(question, pending.querySelector('.bubble'))
         } catch (error) {
-          pending.querySelector('.bubble').textContent = `【执行中断】${error.message}`
+          setBubbleContent(pending.querySelector('.bubble'), `【执行中断】${error.message}`, true)
         } finally {
           setLoading(false)
           questionInput.focus()
@@ -1356,8 +1468,9 @@
 
             if (event.event === 'delta') {
               answer += payload.text || ''
-              bubble.textContent = answer.trim()
+              setBubbleContent(bubble, answer.trim(), true)
               bubble.scrollIntoView({ block: 'end', behavior: 'smooth' })
+              savedAgent3Html = messages.innerHTML
             }
 
             if (event.event === 'error') {
@@ -1367,7 +1480,7 @@
         }
 
         if (!answer.trim()) {
-          bubble.textContent = '【响应为空】未生成可解析的培养方案文本。'
+          setBubbleContent(bubble, '【响应为空】未生成可解析的培养方案文本。', true)
         }
       }
 
@@ -1402,7 +1515,7 @@
 
         const bubble = document.createElement('div')
         bubble.className = 'bubble'
-        bubble.textContent = text
+        setBubbleContent(bubble, text, type !== 'user')
 
         item.append(labelNode, bubble)
         messages.append(item)
@@ -1413,6 +1526,140 @@
         savedAgent3Html = messages.innerHTML
 
         return item
+      }
+
+      function setBubbleContent(bubble, text, renderTables = false) {
+        if (!renderTables) {
+          bubble.classList.remove('rendered')
+          bubble.textContent = text
+          return
+        }
+
+        bubble.classList.add('rendered')
+        bubble.innerHTML = renderMarkdownLite(text)
+      }
+
+      function renderMarkdownLite(text) {
+        const lines = String(text || '').split(/\r?\n/)
+        const parts = []
+        let plain = []
+        let index = 0
+
+        while (index < lines.length) {
+          const heading = parseHeading(lines[index])
+
+          if (heading) {
+            flushPlain(parts, plain)
+            parts.push(renderHeading(heading.level, heading.text))
+            index += 1
+            continue
+          }
+
+          if (isTableStart(lines, index)) {
+            flushPlain(parts, plain)
+
+            const tableLines = [lines[index], lines[index + 1]]
+            index += 2
+
+            while (index < lines.length && isTableRow(lines[index])) {
+              tableLines.push(lines[index])
+              index += 1
+            }
+
+            parts.push(renderTable(tableLines))
+            continue
+          }
+
+          plain.push(lines[index])
+          index += 1
+        }
+
+        flushPlain(parts, plain)
+        return parts.join('')
+      }
+
+      function parseHeading(line) {
+        const match = /^(#{1,6})\s+(.+?)\s*#*$/.exec(String(line || '').trim())
+        if (!match) return null
+
+        return {
+          level: match[1].length,
+          text: match[2],
+        }
+      }
+
+      function renderHeading(level, text) {
+        return `<h${level} class="md-heading md-heading-${level}">${renderInline(text)}</h${level}>`
+      }
+
+      function isTableStart(lines, index) {
+        return isTableRow(lines[index]) && isTableSeparator(lines[index + 1] || '')
+      }
+
+      function isTableRow(line) {
+        return /\|/.test(line || '') && splitTableRow(line).length >= 2
+      }
+
+      function isTableSeparator(line) {
+        const cells = splitTableRow(line)
+        return cells.length >= 2 && cells.every((cell) => /^:?-{3,}:?$/.test(cell.trim()))
+      }
+
+      function splitTableRow(line) {
+        const trimmed = String(line || '').trim().replace(/^\|/, '').replace(/\|$/, '')
+        return trimmed.split('|').map((cell) => cell.trim())
+      }
+
+      function renderTable(tableLines) {
+        const headers = splitTableRow(tableLines[0])
+        const rows = tableLines.slice(2).map(splitTableRow)
+
+        return `
+          <div class="markdown-table-wrap">
+            <table class="markdown-table">
+              <thead>
+                <tr>${headers.map((cell) => `<th>${renderInline(cell)}</th>`).join('')}</tr>
+              </thead>
+              <tbody>
+                ${rows.map((row) => `
+                  <tr>${headers.map((_, cellIndex) => `<td>${renderInline(row[cellIndex] || '')}</td>`).join('')}</tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `
+      }
+
+      function flushPlain(parts, plain) {
+        if (!plain.length) return
+
+        const html = renderInline(plain.join('\n'))
+          .replace(/\n/g, '<br>')
+
+        parts.push(`<div class="md-plain">${html}</div>`)
+        plain.length = 0
+      }
+
+      function renderInline(value) {
+        const codeTokens = []
+        let html = escapeHtml(value).replace(/`([^`]+)`/g, (_, code) => {
+          const token = `@@CODE_${codeTokens.length}@@`
+          codeTokens.push(`<code>${code}</code>`)
+          return token
+        })
+
+        html = html
+          .replace(/\*\*([^*\n][\s\S]*?[^*\n])\*\*/g, '<strong>$1</strong>')
+          .replace(/__([^_\n][\s\S]*?[^_\n])__/g, '<strong>$1</strong>')
+          .replace(/~~([^~\n][\s\S]*?[^~\n])~~/g, '<del>$1</del>')
+          .replace(/(^|[\s>])\*([^*\n]+)\*/g, '$1<em>$2</em>')
+          .replace(/(^|[\s>])_([^_\n]+)_/g, '$1<em>$2</em>')
+
+        codeTokens.forEach((code, index) => {
+          html = html.replace(`@@CODE_${index}@@`, code)
+        })
+
+        return html
       }
 
       function getAgent3EmptyState() {
