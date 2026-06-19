@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nirmana | 智能体3：人才培养方案</title>
+    <title>Nirmana | 基于AI的知识管理 WebApp</title>
     <style>
       :root {
         --bg: #050505;
@@ -46,12 +46,18 @@
       }
 
       button,
+      input,
+      select,
       textarea {
         font: inherit;
       }
 
       button {
         border: 0;
+      }
+
+      .hidden {
+        display: none !important;
       }
 
       .app {
@@ -80,6 +86,10 @@
       }
 
       .login-screen.hidden {
+        display: none;
+      }
+
+      .auth-checking .login-screen {
         display: none;
       }
 
@@ -125,6 +135,28 @@
         padding: 22px;
       }
 
+      .login-course {
+        border-left: 3px solid var(--blue);
+        background: rgba(0, 69, 152, 0.08);
+        color: #e8f1ff;
+        font-size: 0.98rem;
+        font-weight: 850;
+        line-height: 1.45;
+        margin: 0;
+        padding: 10px 12px;
+      }
+
+      .login-course span {
+        display: block;
+        margin-top: 3px;
+        color: #78879b;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
       .login-form label {
         color: var(--blue);
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -133,7 +165,8 @@
         text-transform: uppercase;
       }
 
-      #login-name {
+      #login-email,
+      #login-password {
         min-height: 44px;
         border: 1px solid #3a3a3a;
         border-radius: 0;
@@ -143,7 +176,8 @@
         padding: 0 12px;
       }
 
-      #login-name:focus {
+      #login-email:focus,
+      #login-password:focus {
         border-color: var(--blue);
       }
 
@@ -162,6 +196,18 @@
       .login-hint {
         margin: 0;
         line-height: 1.55;
+      }
+
+      .login-error {
+        min-height: 18px;
+        margin: 0;
+        color: #ff6b61;
+        font-size: 0.76rem;
+        line-height: 1.45;
+      }
+
+      .login-error:empty {
+        display: none;
       }
 
       .sidebar {
@@ -229,6 +275,52 @@
         padding: 22px 0;
       }
 
+      .system-nav {
+        display: grid;
+        gap: 7px;
+        border-top: 1px solid var(--line);
+        padding: 16px 24px 0;
+      }
+
+      .system-link {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        min-height: 38px;
+        border: 1px solid #262626;
+        border-radius: var(--radius);
+        background: #0d0d0d;
+        color: #858585;
+        cursor: pointer;
+        padding: 8px 10px;
+        text-align: left;
+      }
+
+      .system-link:hover,
+      .system-link.active {
+        border-color: var(--blue-line);
+        background: rgba(0, 69, 152, 0.13);
+        color: #dbeafe;
+      }
+
+      .system-link strong {
+        overflow: hidden;
+        font-size: 0.76rem;
+        font-weight: 850;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .system-link span {
+        color: #687386;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.58rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
       .nav-kicker,
       .system-version {
         color: var(--dim);
@@ -244,7 +336,7 @@
 
       .thread {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 10px;
+        grid-template-columns: minmax(0, 1fr) auto;
         gap: 10px;
         align-items: center;
         width: 100%;
@@ -278,17 +370,24 @@
       }
 
       .thread-meta {
-        width: 7px;
-        height: 7px;
-        border: 1px solid #3a3a3a;
-        border-radius: 50%;
-        color: transparent;
-        font-size: 0;
+        min-width: 52px;
+        border: 1px solid #303846;
+        border-radius: var(--radius);
+        background: #101010;
+        color: #707986;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.56rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        padding: 3px 5px;
+        text-align: center;
+        text-transform: uppercase;
       }
 
       .thread.active .thread-meta {
         border-color: var(--blue);
-        background: var(--blue);
+        background: rgba(0, 69, 152, 0.16);
+        color: #dbeafe;
       }
 
       .new-chat {
@@ -348,6 +447,7 @@
       }
 
       .brand p {
+        display: none;
         margin: 4px 0 0;
         color: var(--dim);
         font-size: 0.76rem;
@@ -365,12 +465,20 @@
       }
 
       .user-chip,
+      .profile-chip,
       .logout-button {
         border: 1px solid #343434;
         border-radius: var(--radius);
         background: #171717;
         color: #a0a0a0;
         padding: 4px 7px;
+      }
+
+      .profile-chip {
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .logout-button {
@@ -412,6 +520,7 @@
 
       .status.ready::before {
         background: var(--blue);
+        animation: status-pulse 1.8s ease-in-out infinite;
       }
 
       .status.error {
@@ -423,19 +532,269 @@
       }
 
       .workspace {
+        position: relative;
         display: grid;
-        grid-template-columns: minmax(380px, 0.45fr) minmax(520px, 0.55fr);
+        grid-template-columns: minmax(320px, clamp(340px, 36vw, 460px)) minmax(0, 1fr);
         gap: 28px;
         min-height: 0;
         overflow: hidden;
         padding: 28px 32px;
       }
 
-      .context-panel {
+      .data-view {
+        min-height: 0;
+        overflow-y: auto;
+        padding: 28px 32px;
+      }
+
+      .data-shell {
+        display: grid;
+        gap: 18px;
+        max-width: 1180px;
+      }
+
+      .data-head,
+      .history-toolbar {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .data-head h2 {
+        margin: 0;
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 850;
+      }
+
+      .data-head p {
+        margin: 5px 0 0;
+        color: var(--dim);
+        font-size: 0.76rem;
+      }
+
+      .data-action,
+      .history-delete,
+      #history-sort {
+        min-height: 32px;
+        border: 1px solid #303846;
+        border-radius: var(--radius);
+        background: #12161f;
+        color: #8792a3;
+        cursor: pointer;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.64rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        padding: 5px 9px;
+        text-transform: uppercase;
+      }
+
+      #history-sort {
+        cursor: default;
+      }
+
+      .data-action:hover,
+      .history-delete:hover {
+        border-color: var(--blue-line);
+        color: #dbeafe;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(150px, 1fr));
+        gap: 14px;
+      }
+
+      .stat-card,
+      .record-card {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel-2);
+      }
+
+      .stat-card {
+        padding: 18px;
+      }
+
+      .stat-card span {
+        color: var(--dim);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .stat-card strong {
+        display: block;
+        margin-top: 10px;
+        color: #f8fbff;
+        font-size: 1.35rem;
+        font-weight: 900;
+      }
+
+      .stat-card strong.compact {
+        font-size: 1rem;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+      }
+
+      .stat-card small {
+        display: block;
+        margin-top: 6px;
+        color: #687386;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.62rem;
+      }
+
+      .trend-panel {
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--panel-2);
+        padding: 18px;
+      }
+
+      .trend-panel h3 {
+        margin: 0 0 14px;
+        color: var(--text);
+        font-size: 0.86rem;
+        font-weight: 850;
+      }
+
+      .trend-bars {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(42px, 1fr));
+        gap: 10px;
+        align-items: end;
+        min-height: 180px;
+      }
+
+      .trend-bar {
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto auto;
+        gap: 7px;
+        min-width: 0;
+        height: 180px;
+        text-align: center;
+      }
+
+      .trend-fill {
+        align-self: end;
+        min-height: 3px;
+        border: 1px solid var(--blue-line);
+        background: rgba(0, 69, 152, 0.42);
+      }
+
+      .trend-count,
+      .trend-label {
+        color: #798397;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.62rem;
+      }
+
+      .dashboard-message {
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--dim);
+        padding: 12px 14px;
+      }
+
+      .dashboard-message.error {
+        border-color: rgba(127, 29, 29, 0.7);
+        color: #ff8a80;
+      }
+
+      .history-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .record-card {
+        display: grid;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .record-meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        color: #6f7888;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.64rem;
+        text-transform: uppercase;
+      }
+
+      .record-card details {
+        border-top: 1px solid #202936;
+        padding-top: 10px;
+      }
+
+      .record-card summary {
+        color: var(--blue);
+        cursor: pointer;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .record-text {
+        margin-top: 9px;
+        color: #d0d0d0;
+        font-size: 0.84rem;
+        line-height: 1.68;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+      }
+
+      .data-empty {
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--dim);
+        padding: 18px;
+      }
+
+      .workspace.expanded {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .workspace.expanded .context-panel {
+        display: none;
+      }
+
+      .workspace.scanning::after {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -18%;
+        z-index: 4;
+        width: 18%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 85, 180, 0.04),
+          rgba(0, 85, 180, 0.22),
+          transparent
+        );
+        content: "";
+        pointer-events: none;
+        animation: scanline-pass 680ms ease-out forwards;
+      }
+
+      .context-panel {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        min-width: 0;
         min-height: 0;
         flex-direction: column;
-        gap: 22px;
+        gap: 18px;
         overflow-y: auto;
         padding-right: 4px;
       }
@@ -451,8 +810,11 @@
 
       .logic-card {
         position: relative;
+        display: grid;
+        gap: 9px;
+        min-width: 0;
         overflow: hidden;
-        padding: 22px 24px 22px 28px;
+        padding: 16px 18px 16px 18px;
       }
 
       .logic-card::before {
@@ -479,19 +841,26 @@
       }
 
       .role {
-        margin-top: 7px;
+        min-width: 0;
+        margin-top: 0;
         color: var(--blue);
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 0.7rem;
+        font-size: 0.72rem;
+        font-weight: 850;
+        line-height: 1.35;
         letter-spacing: 0.07em;
         text-transform: uppercase;
+        overflow-wrap: break-word;
       }
 
       .logic-card p {
-        margin: 12px 0 0;
+        min-width: 0;
+        margin: 0;
         color: var(--muted);
-        font-size: 0.86rem;
-        line-height: 1.68;
+        font-size: 0.8rem;
+        line-height: 1.58;
+        word-break: break-word;
+        overflow-wrap: anywhere;
       }
 
       .panel-card {
@@ -545,6 +914,30 @@
         padding: 20px 24px;
       }
 
+      .course-watermark {
+        border-left: 3px solid rgba(0, 85, 180, 0.62);
+        color: rgba(219, 234, 254, 0.78);
+        font-family:
+          "Arial Narrow", "Roboto Condensed", "Inter Tight", "PingFang SC",
+          "Microsoft YaHei", Arial, sans-serif;
+        font-size: 1.02rem;
+        font-weight: 850;
+        letter-spacing: 0;
+        line-height: 1.45;
+        padding: 3px 0 3px 14px;
+      }
+
+      .course-watermark span {
+        display: block;
+        margin-top: 4px;
+        color: rgba(138, 163, 196, 0.72);
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.66rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
       .output-card h3 {
         color: var(--blue);
         font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -574,6 +967,8 @@
       }
 
       .terminal-shell {
+        position: relative;
+        z-index: 1;
         display: flex;
         min-width: 0;
         min-height: 0;
@@ -590,6 +985,40 @@
         border-bottom: 1px solid var(--line);
         background: var(--panel);
         padding: 0 16px;
+      }
+
+      .terminal-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .view-toggle,
+      .expand-toggle,
+      .copy-button {
+        border: 1px solid #303846;
+        border-radius: var(--radius);
+        background: #12161f;
+        color: #8792a3;
+        cursor: pointer;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .view-toggle,
+      .expand-toggle {
+        min-height: 25px;
+        padding: 3px 7px;
+      }
+
+      .view-toggle:hover,
+      .expand-toggle:hover,
+      .copy-button:hover {
+        border-color: var(--blue-line);
+        color: #dbeafe;
       }
 
       .terminal-dots {
@@ -625,6 +1054,27 @@
 
       .terminal-version {
         display: none;
+      }
+
+      .terminal-shell.report-mode {
+        background: #070a0f;
+      }
+
+      .terminal-shell.report-mode .chat {
+        font-family:
+          "Arial Narrow", "Roboto Condensed", "Inter Tight", "PingFang SC",
+          "Microsoft YaHei", Arial, sans-serif;
+      }
+
+      .terminal-shell.report-mode .messages {
+        gap: 20px;
+      }
+
+      .terminal-shell.report-mode .bubble {
+        max-width: min(100%, 940px);
+        border-color: #26364e;
+        background: #080f1d;
+        box-shadow: inset 3px 0 0 rgba(0, 85, 180, 0.62);
       }
 
       .chat {
@@ -682,6 +1132,7 @@
       }
 
       .message {
+        position: relative;
         display: flex;
         flex-direction: column;
         gap: 6px;
@@ -709,6 +1160,7 @@
       }
 
       .bubble {
+        position: relative;
         max-width: min(90%, 860px);
         border: 1px solid var(--blue-line);
         border-radius: 0;
@@ -722,6 +1174,57 @@
         overflow-wrap: break-word;
         padding: 13px 15px;
         white-space: pre-wrap;
+      }
+
+      .message.agent .bubble,
+      .message.system .bubble {
+        padding-right: 58px;
+      }
+
+      .copy-tools {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 4px;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+
+      .copy-button {
+        min-height: 23px;
+        padding: 2px 6px;
+      }
+
+      .message.agent:hover .copy-tools,
+      .message.system:hover .copy-tools,
+      .copy-tools:focus-within,
+      .copy-tools.copied {
+        opacity: 1;
+      }
+
+      .module-brief {
+        display: grid;
+        gap: 16px;
+      }
+
+      .module-card {
+        border: 1px solid var(--line);
+        background: rgba(0, 69, 152, 0.07);
+        padding: 16px 18px;
+      }
+
+      .module-card h3 {
+        margin: 0 0 8px;
+        color: #f4f8ff;
+        font-size: 0.94rem;
+      }
+
+      .module-card p {
+        margin: 0;
+        color: #9ca8b8;
+        font-size: 0.8rem;
+        line-height: 1.65;
       }
 
       .message.user .bubble {
@@ -949,6 +1452,92 @@
         color: #f8fbff;
       }
 
+      .boot-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 4px),
+          radial-gradient(circle at 70% 24%, rgba(0, 69, 152, 0.18), transparent 30%),
+          rgba(3, 5, 9, 0.98);
+      }
+
+      .boot-screen.hidden {
+        display: none;
+      }
+
+      .boot-panel {
+        width: min(100%, 560px);
+        border: 1px solid var(--blue-line);
+        background: #070a0f;
+        padding: 22px 24px;
+      }
+
+      .boot-title {
+        margin-bottom: 14px;
+        color: #f8fbff;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .boot-log {
+        display: grid;
+        gap: 8px;
+        color: #8aa3c4;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.72rem;
+        line-height: 1.5;
+      }
+
+      .boot-log span {
+        opacity: 0;
+        transform: translateY(4px);
+        animation: boot-line 420ms ease forwards;
+      }
+
+      .boot-log span:nth-child(2) {
+        animation-delay: 180ms;
+      }
+
+      .boot-log span:nth-child(3) {
+        animation-delay: 360ms;
+      }
+
+      .boot-log span:nth-child(4) {
+        animation-delay: 540ms;
+      }
+
+      @keyframes status-pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(0, 85, 180, 0.55);
+        }
+        50% {
+          box-shadow: 0 0 0 5px rgba(0, 85, 180, 0);
+        }
+      }
+
+      @keyframes scanline-pass {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(760%);
+        }
+      }
+
+      @keyframes boot-line {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       @media (max-width: 1120px) {
         .app {
           grid-template-columns: 236px minmax(0, 1fr);
@@ -984,6 +1573,7 @@
         }
 
         .thread-list,
+        .system-nav,
         .new-chat,
         .system-version {
           display: none;
@@ -1014,6 +1604,18 @@
           padding: 12px;
         }
 
+        .data-view {
+          padding: 12px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .trend-bars {
+          gap: 6px;
+        }
+
         .terminal-shell {
           min-height: 560px;
         }
@@ -1028,22 +1630,41 @@
       }
     </style>
   </head>
-  <body>
-    <section id="login-screen" class="login-screen" aria-label="模拟登录">
+  <body class="auth-checking">
+    <section id="login-screen" class="login-screen" aria-label="用户登录">
       <div class="login-panel">
         <div class="login-head">
           <div class="mark">NIR</div>
           <div>
             <h1>Nirmana Access</h1>
-            <p>Session Gate / Simulated Login</p>
+            <p>Supabase Auth / Email Login</p>
           </div>
         </div>
         <form id="login-form" class="login-form">
-          <label for="login-name">Operator ID</label>
-          <input id="login-name" name="loginName" type="text" placeholder="输入操作者名称" autocomplete="name" required />
-          <button id="login-submit" type="submit">Enter System</button>
+          <p class="login-course">
+            基于AI的知识管理
+            <span>Course WebApp / Knowledge Studio</span>
+          </p>
+          <label for="login-email">Email</label>
+          <input id="login-email" name="email" type="email" placeholder="name@example.com" autocomplete="email" required />
+          <label for="login-password">Password</label>
+          <input id="login-password" name="password" type="password" placeholder="输入登录密码" autocomplete="current-password" required />
+          <button id="login-submit" type="submit">Login</button>
+          <p id="login-error" class="login-error" role="alert"></p>
           <p class="login-hint">仅限授权人员进入。请确认当前任务编号、数据来源与输出用途符合项目管理要求。</p>
         </form>
+      </div>
+    </section>
+
+    <section id="boot-screen" class="boot-screen hidden" aria-label="系统启动序列">
+      <div class="boot-panel">
+        <div class="boot-title">NIRMANA BOOT SEQUENCE</div>
+        <div class="boot-log">
+          <span>[BOOT] 画皮実行委員会 node initialized</span>
+          <span>[SYNC] Agent topology loaded</span>
+          <span>[VERIFY] Markdown renderer online</span>
+          <span>[READY] Interactive shell attached</span>
+        </div>
       </div>
     </section>
 
@@ -1061,25 +1682,40 @@
           <div class="nav-kicker">Core Agents</div>
           <button class="thread" type="button" data-agent="agent1">
             <span class="thread-title">智能体 1：人才发展报告</span>
-            <span class="thread-meta">standby</span>
+            <span class="thread-meta">SYNC</span>
           </button>
           <button class="thread" type="button" data-agent="agent2">
             <span class="thread-title">智能体 2：胜任力差距分析</span>
-            <span class="thread-meta">standby</span>
+            <span class="thread-meta">SYNC</span>
           </button>
           <button class="thread active" type="button" data-agent="agent3">
             <span class="thread-title">智能体 3：人才培养方案</span>
-            <span class="thread-meta">active</span>
+            <span class="thread-meta">ACTIVE</span>
           </button>
           <button class="thread" type="button" data-agent="agent4">
             <span class="thread-title">智能体 4：课程设计开发</span>
-            <span class="thread-meta">standby</span>
+            <span class="thread-meta">LOCKED</span>
           </button>
           <button class="thread" type="button" data-agent="agent5">
             <span class="thread-title">智能体 5：评价题库生成</span>
-            <span class="thread-meta">standby</span>
+            <span class="thread-meta">LOCKED</span>
           </button>
         </div>
+
+        <nav class="system-nav" aria-label="系统功能">
+          <button class="system-link active" type="button" data-view="chat">
+            <strong>Chat Workspace</strong>
+            <span>AI</span>
+          </button>
+          <button class="system-link" type="button" data-view="history">
+            <strong>History</strong>
+            <span>Records</span>
+          </button>
+          <button class="system-link" type="button" data-view="dashboard">
+            <strong>Dashboard</strong>
+            <span>Stats</span>
+          </button>
+        </nav>
 
         <button id="new-chat" class="new-chat" type="button">Reset Agent 03</button>
         <div class="system-version">Nirmana System: v2.4.1_Build904</div>
@@ -1090,12 +1726,14 @@
           <div class="brand">
             <div>
               <h1 id="agent-title">方案设计与生成工作台</h1>
-              <p id="agent-subtitle">智能体3作为培养方案设计核心枢纽，连接产业需求、胜任力差距与课程开发。</p>
+              <p id="agent-subtitle"></p>
             </div>
             <div class="top-meta">
               <span id="agent-id" class="agent-id">ID: AGENT3</span>
               <span id="status" class="status">引擎校验中</span>
               <span id="user-chip" class="user-chip">USER: --</span>
+              <span id="role-chip" class="profile-chip">ROLE: --</span>
+              <span id="department-chip" class="profile-chip">DEPT: --</span>
               <button id="logout" class="logout-button" type="button">Logout</button>
               <span>SYS: NIRMANA</span>
               <span>NODE: SH-01</span>
@@ -1106,9 +1744,8 @@
         <section class="workspace">
           <aside class="context-panel" aria-label="业务模型">
             <section id="role-card" class="logic-card active">
-              <h2>核心角色定位</h2>
-              <div id="agent-role" class="role">方案设计核心枢纽</div>
-              <p id="agent-desc">扮演“培养方案设计专家”角色，基于产业数据构建科学的人才培养体系。作为系统承上启下的枢纽，直接为智能体4提供顶层规划依据。</p>
+              <div id="agent-role" class="role hidden"></div>
+              <p id="agent-desc">基于产业数据生成人才培养方案，并输出课程体系规划依据。</p>
             </section>
 
             <div id="panel-stack"></div>
@@ -1117,6 +1754,11 @@
               <h3>Standard Outputs</h3>
               <div id="output-list" class="output-list"></div>
             </section>
+
+            <div class="course-watermark">
+              基于AI的知识管理
+              <span>Course WebApp / Knowledge Studio</span>
+            </div>
 
             <section class="metric">
               <strong id="message-count">0</strong>
@@ -1132,7 +1774,11 @@
                 <span class="dot green"></span>
               </div>
               <h2 id="terminal-mode" class="terminal-title">Interactive_Shell</h2>
-              <span class="terminal-version">NIRMANA_AGENT_03</span>
+              <div class="terminal-actions">
+                <button id="expand-toggle" class="expand-toggle" type="button">Expand</button>
+                <button id="view-toggle" class="view-toggle" type="button">Report</button>
+                <span class="terminal-version">NIRMANA_AGENT_03</span>
+              </div>
             </div>
 
             <section class="chat" aria-live="polite">
@@ -1153,6 +1799,67 @@
               <p class="hint">CMD/CTRL + ENTER EXECUTE / TARGET: 九宫格结构人才培养方案 + 毕业要求-课程支撑矩阵表</p>
             </form>
           </section>
+        </section>
+
+        <section id="history-view" class="data-view hidden" aria-label="历史记录">
+          <div class="data-shell">
+            <div class="data-head">
+              <div>
+                <h2>History</h2>
+                <p>当前用户的全部查询记录，可按时间排序、展开查看完整问答，并删除单条记录。</p>
+              </div>
+              <button id="history-refresh" class="data-action" type="button">Refresh</button>
+            </div>
+            <div class="history-toolbar">
+              <label for="history-sort" class="label">Time Order</label>
+              <select id="history-sort">
+                <option value="desc">Newest First</option>
+                <option value="asc">Oldest First</option>
+              </select>
+            </div>
+            <div id="history-list" class="history-list"></div>
+          </div>
+        </section>
+
+        <section id="dashboard-view" class="data-view hidden" aria-label="基础统计">
+          <div class="data-shell">
+            <div class="data-head">
+              <div>
+                <h2>Knowledge Usage Dashboard</h2>
+                <p>统计数据实时读取自 chat_records 与 profiles。</p>
+              </div>
+              <button id="dashboard-refresh" class="data-action" type="button">Refresh</button>
+            </div>
+            <div id="dashboard-message" class="dashboard-message hidden"></div>
+            <div class="stats-grid">
+              <article class="stat-card">
+                <span>Total Queries</span>
+                <strong id="stat-total">0</strong>
+              </article>
+              <article class="stat-card">
+                <span>Queries Today</span>
+                <strong id="stat-today">0</strong>
+              </article>
+              <article class="stat-card">
+                <span>Average Response Time</span>
+                <strong id="stat-average">0 ms</strong>
+              </article>
+              <article class="stat-card">
+                <span>Most Active User</span>
+                <strong id="stat-active-user" class="compact">--</strong>
+                <small id="stat-active-user-count">0 queries</small>
+              </article>
+              <article class="stat-card">
+                <span>Most Active Department</span>
+                <strong id="stat-active-department" class="compact">--</strong>
+                <small id="stat-active-department-count">0 queries</small>
+              </article>
+            </div>
+            <section class="trend-panel">
+              <h3>Last 7 Days Query Trend</h3>
+              <div id="trend-bars" class="trend-bars"></div>
+            </section>
+          </div>
         </section>
       </section>
     </main>
@@ -1203,8 +1910,8 @@
           id: 'agent3',
           menuName: '智能体 3：人才培养方案',
           title: '方案设计与生成工作台',
-          role: '方案设计核心枢纽',
-          desc: '扮演“培养方案设计专家”角色，基于产业数据构建科学的人才培养体系。作为系统承上启下的枢纽，直接为智能体4提供顶层规划依据。',
+          role: '',
+          desc: '基于产业数据生成人才培养方案，并输出课程体系规划依据。',
           panels: [
             {
               title: '核心映射逻辑',
@@ -1216,7 +1923,16 @@
               ],
             },
           ],
-          outputs: ['《九宫格结构人才培养方案》', '《毕业要求-课程支撑矩阵表》', '配套考核规范与指引'],
+          outputs: [
+            '物联网工程（智能硬件方向）',
+            '物联网工程（边缘计算方向）',
+            '物联网工程（工业互联网方向）',
+            'AIoT（智能感知与端侧AI方向）',
+            '5G物联网通信（NB-IoT与LTE-M方向）',
+            '智慧城市物联网（城市感知与CIM方向）',
+            '智慧能源物联网（双碳监测与能源管理方向）',
+            '车联网工程（C-V2X与智能网联汽车方向）',
+          ],
           terminalState: 'active',
           logs: ['[System] 智能体 3 引擎已就绪。等待用户输入指令...'],
         },
@@ -1264,9 +1980,13 @@
 
       const form = document.querySelector('#form')
       const appRoot = document.querySelector('#app')
+      const bootScreen = document.querySelector('#boot-screen')
       const loginScreen = document.querySelector('#login-screen')
       const loginForm = document.querySelector('#login-form')
-      const loginNameInput = document.querySelector('#login-name')
+      const loginEmailInput = document.querySelector('#login-email')
+      const loginPasswordInput = document.querySelector('#login-password')
+      const loginSubmit = document.querySelector('#login-submit')
+      const loginError = document.querySelector('#login-error')
       const questionInput = document.querySelector('#question')
       const sendButton = document.querySelector('#send')
       const messages = document.querySelector('#messages')
@@ -1274,8 +1994,13 @@
       const messageCount = document.querySelector('#message-count')
       const newChatButton = document.querySelector('#new-chat')
       const userChip = document.querySelector('#user-chip')
+      const roleChip = document.querySelector('#role-chip')
+      const departmentChip = document.querySelector('#department-chip')
       const logoutButton = document.querySelector('#logout')
+      const viewToggle = document.querySelector('#view-toggle')
+      const expandToggle = document.querySelector('#expand-toggle')
       const navButtons = document.querySelectorAll('.thread')
+      const systemLinks = document.querySelectorAll('.system-link')
       const agentTitle = document.querySelector('#agent-title')
       const agentSubtitle = document.querySelector('#agent-subtitle')
       const agentId = document.querySelector('#agent-id')
@@ -1285,36 +2010,139 @@
       const outputList = document.querySelector('#output-list')
       const terminalMode = document.querySelector('#terminal-mode')
       const terminalShell = document.querySelector('#terminal-shell')
+      const workspace = document.querySelector('.workspace')
+      const historyView = document.querySelector('#history-view')
+      const dashboardView = document.querySelector('#dashboard-view')
+      const historyList = document.querySelector('#history-list')
+      const historySort = document.querySelector('#history-sort')
+      const historyRefresh = document.querySelector('#history-refresh')
+      const dashboardRefresh = document.querySelector('#dashboard-refresh')
+      const dashboardMessage = document.querySelector('#dashboard-message')
+      const statTotal = document.querySelector('#stat-total')
+      const statToday = document.querySelector('#stat-today')
+      const statAverage = document.querySelector('#stat-average')
+      const statActiveUser = document.querySelector('#stat-active-user')
+      const statActiveUserCount = document.querySelector('#stat-active-user-count')
+      const statActiveDepartment = document.querySelector('#stat-active-department')
+      const statActiveDepartmentCount = document.querySelector('#stat-active-department-count')
+      const trendBars = document.querySelector('#trend-bars')
 
-      const SESSION_USER_KEY = 'nirmana_session_user'
+      const SESSION_KEY = 'nirmana_supabase_session'
       let activeAgentId = 'agent3'
+      let activeView = 'chat'
       let hasMessages = false
       let count = 0
       let savedAgent3Html = ''
+      let viewMode = 'terminal'
+      let isExpanded = false
+      let bootTimer = null
+      let currentSession = null
+      let currentUser = null
+      let currentProfile = null
 
       renderAgent('agent3')
+      applyViewMode()
+      applyExpandedMode()
       checkHealth()
       restoreSession()
 
       navButtons.forEach((button) => {
         button.addEventListener('click', () => {
+          showAppView('chat')
           renderAgent(button.dataset.agent)
         })
       })
 
-      loginForm.addEventListener('submit', (event) => {
-        event.preventDefault()
-
-        const userName = loginNameInput.value.trim()
-        if (!userName) return
-
-        sessionStorage.setItem(SESSION_USER_KEY, userName)
-        unlockSession(userName)
+      systemLinks.forEach((button) => {
+        button.addEventListener('click', () => {
+          showAppView(button.dataset.view)
+        })
       })
 
-      logoutButton.addEventListener('click', () => {
-        sessionStorage.removeItem(SESSION_USER_KEY)
+      messages.addEventListener('click', (event) => {
+        const copyButton = event.target.closest('.copy-button')
+        if (!copyButton) return
+
+        const bubble = copyButton.closest('.bubble')
+        const markdownText = bubble?.dataset.rawText || bubble?.textContent || ''
+        const copyText = copyButton.dataset.copyMode === 'plain'
+          ? markdownToPlainText(markdownText)
+          : markdownText
+
+        copyMessageText(copyButton, copyText)
+      })
+
+      loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault()
+
+        const email = loginEmailInput.value.trim()
+        const password = loginPasswordInput.value
+        if (!email || !password) return
+
+        setLoginLoading(true)
+        loginError.textContent = ''
+
+        try {
+          const data = await postJson('/api/auth/login', { email, password })
+          applyAuthData(data)
+          saveSession()
+          unlockSession()
+        } catch (error) {
+          loginError.textContent = error.message || '登录失败。'
+        } finally {
+          setLoginLoading(false)
+        }
+      })
+
+      logoutButton.addEventListener('click', async () => {
+        try {
+          await apiRequest('/api/auth/logout', { method: 'POST' })
+        } catch {
+          // 本地清理优先，远端 session 失效时不阻塞退出。
+        }
+
         lockSession()
+      })
+
+      historySort.addEventListener('change', () => {
+        loadHistory()
+      })
+
+      historyRefresh.addEventListener('click', () => {
+        loadHistory()
+      })
+
+      dashboardRefresh.addEventListener('click', () => {
+        loadDashboard()
+      })
+
+      historyList.addEventListener('click', async (event) => {
+        const deleteButton = event.target.closest('.history-delete')
+        if (!deleteButton) return
+
+        const id = deleteButton.dataset.id
+        if (!id) return
+
+        deleteButton.disabled = true
+
+        try {
+          await apiRequest(`/api/history/${encodeURIComponent(id)}`, { method: 'DELETE' })
+          await loadHistory()
+          if (activeView === 'dashboard') {
+            await loadDashboard()
+          }
+        } catch (error) {
+          deleteButton.textContent = 'Failed'
+          window.setTimeout(() => {
+            deleteButton.textContent = 'Delete'
+            deleteButton.disabled = false
+          }, 1400)
+        }
+      })
+
+      window.addEventListener('hashchange', () => {
+        if (!currentSession) return
+        showAppView(readHashView(), false)
       })
 
       form.addEventListener('submit', async (event) => {
@@ -1362,6 +2190,16 @@
         questionInput.focus()
       })
 
+      viewToggle?.addEventListener('click', () => {
+        viewMode = viewMode === 'terminal' ? 'report' : 'terminal'
+        applyViewMode()
+      })
+
+      expandToggle?.addEventListener('click', () => {
+        isExpanded = !isExpanded
+        applyExpandedMode()
+      })
+
       async function checkHealth() {
         try {
           const response = await fetch('/api/health')
@@ -1393,12 +2231,16 @@
 
         navButtons.forEach((button) => {
           button.classList.toggle('active', button.dataset.agent === agentIdValue)
+          button.querySelector('.thread-meta').textContent = getAgentBadge(button.dataset.agent, agentIdValue)
         })
 
+        triggerScanline()
+
         agentTitle.textContent = agent.title
-        agentSubtitle.textContent = agent.desc
+        agentSubtitle.textContent = ''
         agentId.textContent = `ID: ${agent.id.toUpperCase()}`
         agentRole.textContent = agent.role
+        agentRole.classList.toggle('hidden', !agent.role)
         agentDesc.textContent = agent.desc
         terminalMode.textContent = agent.terminalState === 'active' ? 'Interactive_Shell' : 'Read_Only_Log'
         terminalShell.classList.toggle('locked', agent.terminalState !== 'active')
@@ -1426,21 +2268,61 @@
           }
           questionInput.disabled = false
           sendButton.disabled = false
+          viewToggle.disabled = false
           questionInput.placeholder = '输入初始条件以启动方案生成...'
         } else {
           messages.innerHTML = getLogState(agent)
           questionInput.disabled = true
           sendButton.disabled = true
+          viewToggle.disabled = true
           questionInput.placeholder = 'SYSTEM LOCKED'
         }
       }
 
-      async function streamAnswer(question, bubble) {
+      function getAgentBadge(agentIdValue, selectedAgentId) {
+        if (agentIdValue === selectedAgentId) return 'ACTIVE'
+        if (AGENTS[agentIdValue]?.terminalState === 'active') return 'READY'
+        return agentIdValue === 'agent1' || agentIdValue === 'agent2' ? 'SYNC' : 'LOCKED'
+      }
+
+      function triggerScanline() {
+        if (!workspace) return
+
+        workspace.classList.remove('scanning')
+        void workspace.offsetWidth
+        workspace.classList.add('scanning')
+        window.setTimeout(() => {
+          workspace.classList.remove('scanning')
+        }, 720)
+      }
+
+      function applyViewMode() {
+        terminalShell.classList.toggle('report-mode', viewMode === 'report')
+        viewToggle.textContent = viewMode === 'report' ? 'Terminal' : 'Report'
+      }
+
+      function applyExpandedMode() {
+        workspace.classList.toggle('expanded', isExpanded)
+        expandToggle.textContent = isExpanded ? 'Restore' : 'Expand'
+      }
+
+      async function streamAnswer(question, bubble, retry = true) {
         const response = await fetch('/api/chat-stream', {
           method: 'POST',
-          headers: { 'content-type': 'application/json' },
+          headers: {
+            'content-type': 'application/json',
+            ...getAuthHeaders(),
+          },
           body: JSON.stringify({ question }),
         })
+
+        if (response.status === 401 && retry) {
+          if (await refreshSession()) {
+            return streamAnswer(question, bubble, false)
+          }
+
+          lockSession()
+        }
 
         if (!response.ok || !response.body) {
           const data = await response.json().catch(() => ({}))
@@ -1515,6 +2397,9 @@
 
         const bubble = document.createElement('div')
         bubble.className = 'bubble'
+        if (type !== 'user') {
+          bubble.dataset.copyable = 'true'
+        }
         setBubbleContent(bubble, text, type !== 'user')
 
         item.append(labelNode, bubble)
@@ -1529,6 +2414,8 @@
       }
 
       function setBubbleContent(bubble, text, renderTables = false) {
+        bubble.dataset.rawText = text
+
         if (!renderTables) {
           bubble.classList.remove('rendered')
           bubble.textContent = text
@@ -1537,6 +2424,78 @@
 
         bubble.classList.add('rendered')
         bubble.innerHTML = renderMarkdownLite(text)
+        ensureCopyButton(bubble)
+      }
+
+      function ensureCopyButton(bubble) {
+        if (bubble.dataset.copyable !== 'true' || bubble.querySelector('.copy-tools')) return
+
+        const tools = document.createElement('div')
+        tools.className = 'copy-tools'
+
+        const markdownButton = document.createElement('button')
+        markdownButton.className = 'copy-button'
+        markdownButton.type = 'button'
+        markdownButton.dataset.copyMode = 'markdown'
+        markdownButton.textContent = 'MD'
+
+        const plainButton = document.createElement('button')
+        plainButton.className = 'copy-button'
+        plainButton.type = 'button'
+        plainButton.dataset.copyMode = 'plain'
+        plainButton.textContent = 'Plain'
+
+        tools.append(markdownButton, plainButton)
+        bubble.append(tools)
+      }
+
+      async function copyMessageText(button, text) {
+        const value = String(text || '').trim()
+        if (!value) return
+
+        try {
+          if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(value)
+          } else {
+            const textarea = document.createElement('textarea')
+            textarea.value = value
+            textarea.setAttribute('readonly', '')
+            textarea.style.position = 'fixed'
+            textarea.style.left = '-9999px'
+            document.body.append(textarea)
+            textarea.select()
+            document.execCommand('copy')
+            textarea.remove()
+          }
+
+          button.textContent = 'Copied'
+          button.parentElement?.classList.add('copied')
+          window.setTimeout(() => {
+            button.textContent = button.dataset.copyMode === 'plain' ? 'Plain' : 'MD'
+            button.parentElement?.classList.remove('copied')
+          }, 1200)
+        } catch {
+          button.textContent = 'Failed'
+          window.setTimeout(() => {
+            button.textContent = button.dataset.copyMode === 'plain' ? 'Plain' : 'MD'
+          }, 1200)
+        }
+      }
+
+      function markdownToPlainText(markdown) {
+        return String(markdown || '')
+          .replace(/```[\s\S]*?```/g, (block) => block.replace(/```[a-zA-Z0-9_-]*\n?|\n?```/g, ''))
+          .replace(/`([^`]+)`/g, '$1')
+          .replace(/\*\*([^*]+)\*\*/g, '$1')
+          .replace(/__([^_]+)__/g, '$1')
+          .replace(/\*([^*]+)\*/g, '$1')
+          .replace(/_([^_]+)_/g, '$1')
+          .replace(/~~([^~]+)~~/g, '$1')
+          .replace(/^#{1,6}\s+/gm, '')
+          .replace(/^\s*[-*+]\s+/gm, '')
+          .replace(/^\s*\d+\.\s+/gm, '')
+          .replace(/^\s*>\s?/gm, '')
+          .trim()
       }
 
       function renderMarkdownLite(text) {
@@ -1684,12 +2643,22 @@
       function getLogState(agent) {
         const now = new Date().toISOString().split('T')[1].slice(0, 8)
         return `
-          <section class="log-list">
-            <div class="locked-note"># Module locked by system. Waiting for upstream trigger.</div>
-            ${agent.logs.map((log) => `
-              <div class="log-line"><span class="log-time">[${now}]</span>${escapeHtml(log)}</div>
-            `).join('')}
-            <div class="log-line">_</div>
+          <section class="module-brief">
+            <article class="module-card">
+              <h3>${escapeHtml(agent.title)}</h3>
+              <p>${escapeHtml(agent.desc)}</p>
+            </article>
+            <article class="module-card">
+              <h3>Capability Range</h3>
+              <p>${agent.outputs.map((item) => escapeHtml(item)).join(' / ')}</p>
+            </article>
+            <section class="log-list">
+              <div class="locked-note"># Module locked by system. 当前为只读预览，等待上游触发。</div>
+              ${agent.logs.map((log) => `
+                <div class="log-line"><span class="log-time">[${now}]</span>${escapeHtml(log)}</div>
+              `).join('')}
+              <div class="log-line">_</div>
+            </section>
           </section>
         `
       }
@@ -1710,30 +2679,355 @@
         sendButton.textContent = isLoading ? 'Running' : 'Execute'
       }
 
-      function restoreSession() {
-        const userName = sessionStorage.getItem(SESSION_USER_KEY)
+      async function restoreSession() {
+        const saved = readSavedSession()
 
-        if (userName) {
-          unlockSession(userName)
+        if (!saved?.access_token) {
+          lockSession()
           return
         }
 
-        lockSession()
+        currentSession = saved
+
+        try {
+          const data = await apiRequest('/api/me')
+          currentUser = data.user
+          currentProfile = data.profile
+          saveSession()
+          unlockSession()
+        } catch {
+          if (await refreshSession()) {
+            unlockSession()
+            return
+          }
+
+          lockSession()
+        }
       }
 
-      function unlockSession(userName) {
+      function unlockSession() {
+        document.body.classList.remove('auth-checking')
         loginScreen.classList.add('hidden')
         appRoot.classList.remove('auth-hidden')
-        userChip.textContent = `USER: ${userName}`
+        updateProfileChips()
+        startBootSequence()
+        showAppView(readHashView(), false)
         questionInput.focus()
       }
 
       function lockSession() {
+        document.body.classList.remove('auth-checking')
+        stopBootSequence()
+        clearSession()
         appRoot.classList.add('auth-hidden')
         loginScreen.classList.remove('hidden')
         userChip.textContent = 'USER: --'
-        loginNameInput.value = ''
-        loginNameInput.focus()
+        roleChip.textContent = 'ROLE: --'
+        departmentChip.textContent = 'DEPT: --'
+        loginEmailInput.value = ''
+        loginPasswordInput.value = ''
+        loginError.textContent = ''
+        loginEmailInput.focus()
+      }
+
+      function setLoginLoading(isLoading) {
+        loginSubmit.disabled = isLoading
+        loginSubmit.textContent = isLoading ? 'Logging In' : 'Login'
+      }
+
+      async function postJson(url, payload) {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        const data = await response.json().catch(() => ({}))
+
+        if (!response.ok || data.ok === false) {
+          throw new Error(data.error || '请求失败。')
+        }
+
+        return data
+      }
+
+      async function apiRequest(url, options = {}, retry = true) {
+        const headers = {
+          ...(options.headers || {}),
+          ...getAuthHeaders(),
+        }
+
+        const response = await fetch(url, {
+          ...options,
+          headers,
+        })
+        const data = await response.json().catch(() => ({}))
+
+        if (response.status === 401 && retry) {
+          if (await refreshSession()) {
+            return apiRequest(url, options, false)
+          }
+
+          lockSession()
+        }
+
+        if (!response.ok || data.ok === false) {
+          throw new Error(data.error || '请求失败。')
+        }
+
+        return data
+      }
+
+      async function refreshSession() {
+        if (!currentSession?.refresh_token) {
+          return false
+        }
+
+        try {
+          const data = await postJson('/api/auth/refresh', {
+            refreshToken: currentSession.refresh_token,
+          })
+          applyAuthData(data)
+          saveSession()
+          updateProfileChips()
+          return true
+        } catch {
+          clearSession()
+          return false
+        }
+      }
+
+      function applyAuthData(data) {
+        currentSession = data.session || null
+        currentUser = data.user || null
+        currentProfile = data.profile || null
+      }
+
+      function getAuthHeaders() {
+        return currentSession?.access_token
+          ? { authorization: `Bearer ${currentSession.access_token}` }
+          : {}
+      }
+
+      function saveSession() {
+        if (!currentSession) return
+
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+          access_token: currentSession.access_token,
+          refresh_token: currentSession.refresh_token,
+          expires_at: currentSession.expires_at,
+          token_type: currentSession.token_type,
+        }))
+      }
+
+      function readSavedSession() {
+        try {
+          return JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null')
+        } catch {
+          return null
+        }
+      }
+
+      function clearSession() {
+        currentSession = null
+        currentUser = null
+        currentProfile = null
+        sessionStorage.removeItem(SESSION_KEY)
+      }
+
+      function updateProfileChips() {
+        const displayName = currentProfile?.display_name
+          || currentProfile?.username
+          || currentUser?.email
+          || '--'
+
+        userChip.textContent = `USER: ${displayName}`
+        roleChip.textContent = `ROLE: ${currentProfile?.role || '--'}`
+        departmentChip.textContent = `DEPT: ${currentProfile?.department || '--'}`
+      }
+
+      function showAppView(view, pushHash = true) {
+        activeView = ['chat', 'history', 'dashboard'].includes(view) ? view : 'chat'
+        workspace.classList.toggle('hidden', activeView !== 'chat')
+        historyView.classList.toggle('hidden', activeView !== 'history')
+        dashboardView.classList.toggle('hidden', activeView !== 'dashboard')
+
+        systemLinks.forEach((button) => {
+          button.classList.toggle('active', button.dataset.view === activeView)
+        })
+
+        if (pushHash) {
+          history.replaceState(null, '', `#${activeView}`)
+        }
+
+        if (activeView === 'chat') {
+          renderAgent(activeAgentId)
+          return
+        }
+
+        if (activeView === 'history') {
+          agentTitle.textContent = '历史记录'
+          agentSubtitle.textContent = ''
+          agentId.textContent = 'ID: HISTORY'
+          loadHistory()
+          return
+        }
+
+        agentTitle.textContent = 'Knowledge Usage Dashboard'
+        agentSubtitle.textContent = ''
+        agentId.textContent = 'ID: DASHBOARD'
+        loadDashboard()
+      }
+
+      function readHashView() {
+        const value = window.location.hash.replace('#', '')
+        return ['chat', 'history', 'dashboard'].includes(value) ? value : 'chat'
+      }
+
+      async function loadHistory() {
+        historyList.innerHTML = '<div class="data-empty">Loading records...</div>'
+
+        try {
+          const sort = historySort.value === 'asc' ? 'asc' : 'desc'
+          const data = await apiRequest(`/api/history?sort=${sort}`)
+          renderHistory(data.records || [])
+        } catch (error) {
+          historyList.innerHTML = `<div class="data-empty">${escapeHtml(error.message || '历史记录读取失败。')}</div>`
+        }
+      }
+
+      function renderHistory(records) {
+        if (!records.length) {
+          historyList.innerHTML = '<div class="data-empty">暂无聊天记录。</div>'
+          return
+        }
+
+        historyList.innerHTML = records.map((record) => `
+          <article class="record-card">
+            <div class="record-meta">
+              <span>${escapeHtml(formatDateTime(record.created_at))}</span>
+              <span>${escapeHtml(record.status || 'success')} / ${Number(record.response_time_ms || 0)} ms</span>
+              <button class="history-delete" type="button" data-id="${escapeHtml(record.id)}">Delete</button>
+            </div>
+            <details>
+              <summary>Full Question</summary>
+              <div class="record-text">${escapeHtml(record.question || '')}</div>
+            </details>
+            <details>
+              <summary>Full Answer</summary>
+              <div class="record-text">${escapeHtml(record.answer || '')}</div>
+            </details>
+          </article>
+        `).join('')
+      }
+
+      async function loadDashboard() {
+        setDashboardLoading()
+
+        try {
+          const stats = await fetchDashboardStats()
+          renderDashboardStats(stats)
+        } catch (error) {
+          renderDashboardError(error)
+        }
+      }
+
+      async function fetchDashboardStats() {
+        const data = await apiRequest('/api/dashboard')
+        return data.stats || {}
+      }
+
+      function setDashboardLoading() {
+        dashboardMessage.classList.remove('hidden', 'error')
+        dashboardMessage.textContent = 'Loading dashboard data...'
+        dashboardRefresh.disabled = true
+        statTotal.textContent = '--'
+        statToday.textContent = '--'
+        statAverage.textContent = '--'
+        statActiveUser.textContent = '--'
+        statActiveUserCount.textContent = 'Loading'
+        statActiveDepartment.textContent = '--'
+        statActiveDepartmentCount.textContent = 'Loading'
+        trendBars.innerHTML = ''
+      }
+
+      function renderDashboardStats(stats) {
+        dashboardRefresh.disabled = false
+        dashboardMessage.classList.add('hidden')
+        dashboardMessage.textContent = ''
+
+        const activeUser = stats.mostActiveUser || {}
+        const activeDepartment = stats.mostActiveDepartment || {}
+
+        statTotal.textContent = String(stats.totalQueries || 0)
+        statToday.textContent = String(stats.queriesToday || 0)
+        statAverage.textContent = `${Number(stats.averageResponseTime || 0)} ms`
+        statActiveUser.textContent = activeUser.name || '--'
+        statActiveUserCount.textContent = `${Number(activeUser.count || 0)} queries`
+        statActiveDepartment.textContent = activeDepartment.name || '--'
+        statActiveDepartmentCount.textContent = `${Number(activeDepartment.count || 0)} queries`
+        renderTrendBars(stats.last7DaysTrend || [])
+      }
+
+      function renderDashboardError(error) {
+        dashboardRefresh.disabled = false
+        dashboardMessage.classList.remove('hidden')
+        dashboardMessage.classList.add('error')
+        dashboardMessage.textContent = error.message || 'Dashboard 数据读取失败。'
+        statTotal.textContent = '--'
+        statToday.textContent = '--'
+        statAverage.textContent = '--'
+        statActiveUser.textContent = '--'
+        statActiveUserCount.textContent = '0 queries'
+        statActiveDepartment.textContent = '--'
+        statActiveDepartmentCount.textContent = '0 queries'
+        trendBars.innerHTML = ''
+      }
+
+      function renderTrendBars(trend) {
+        const maxCount = Math.max(1, ...trend.map((item) => Number(item.count || 0)))
+
+        trendBars.innerHTML = trend.map((item) => {
+          const count = Number(item.count || 0)
+          const height = Math.max(3, Math.round((count / maxCount) * 124))
+
+          return `
+            <div class="trend-bar">
+              <div class="trend-fill" style="height: ${height}px"></div>
+              <div class="trend-count">${count}</div>
+              <div class="trend-label">${escapeHtml(item.label || '--')}</div>
+            </div>
+          `
+        }).join('')
+      }
+
+      function formatDateTime(value) {
+        if (!value) return '--'
+
+        const date = new Date(value)
+        if (Number.isNaN(date.getTime())) return '--'
+
+        return date.toLocaleString('zh-CN', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      }
+
+      function startBootSequence() {
+        if (!bootScreen) return
+
+        window.clearTimeout(bootTimer)
+        bootScreen.classList.remove('hidden')
+        bootTimer = window.setTimeout(() => {
+          bootScreen.classList.add('hidden')
+        }, 1350)
+      }
+
+      function stopBootSequence() {
+        window.clearTimeout(bootTimer)
+        bootScreen?.classList.add('hidden')
       }
 
       function escapeHtml(value) {

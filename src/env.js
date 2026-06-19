@@ -1,6 +1,8 @@
 import fs from 'node:fs'
 
-export function loadEnv(envPath) {
+export function loadEnv(envPath, options = {}) {
+  const { override = true } = options
+
   if (!fs.existsSync(envPath)) {
     return
   }
@@ -29,7 +31,7 @@ export function loadEnv(envPath) {
       value = value.slice(1, -1)
     }
 
-    if (!process.env[key]) {
+    if (override || !process.env[key]) {
       process.env[key] = value
     }
   }

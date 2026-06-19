@@ -1,4 +1,4 @@
-# Gemini Design Brief for Nirmana
+# Design Brief for Nirmana
 
 请你负责继续美化 `public/index.html`，但不要改变本地 API 调用逻辑。
 

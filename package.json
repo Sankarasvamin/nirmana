@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "check": "node --check server.js && node --check src/agentApi.js && node --check src/env.js && node --check src/supabaseClient.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.50.0"
   },
   "engines": {
     "node": ">=20.19.0"
